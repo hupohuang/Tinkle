@@ -1,0 +1,9 @@
+{% extends "nmbase.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>上传新图片</h1>
+</div>
+{{ wtf.quick_form(form) }}
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="col-md-offset-8">
+<div class="page-header">
+    <h1>用户登陆</h1>
+</div>
+{{ wtf.quick_form(form) }}
+<button class="btn btn-default" id="submit" name="submit" type="submit">登陆</button>
+<div id="tishi" style="color: red;font-size: 20px;display: none;font-weight: bolder;">提示： <div id="result"></div></div>
+<script type="text/javascript">
+    $(function(){
+        $('.btn').click(function(){
+            var $result = $('#result');
+            var $tishi = $('#tishi');
+            var $username = $('input[name="username"]').val();
+            var $password = $('input[name="password"]').val();
+            $.ajax({
+                url:'/login',
+                data:$('form').serialize(),
+                type:'POST',
+                dataType:'json'
+            }).done(function(data) {
+                if (!data.r){
+                    window.location.href="{{url_for('index')}}";
+                } else {
+                    $tishi.show();
+                    $result.html(data.error);
+                }
+            });
+        });
+    });
+</script>
+</div>
+{% endblock %}

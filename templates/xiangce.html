@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="page-header">
+    <div style="clear: both">
+        <div class="col-md-4">
+            <p style="font-size: 50px;padding-bottom: 10px;">
+                <span class="glyphicon glyphicon-th-large"></span>{{ xc.xcname }}</p>
+        </div>
+        <div class="col-md-offset-10">
+            {% if current_user.is_authenticated %}
+            <button type="button" class="btn btn-lg btn-info">
+                <span class="glyphicon glyphicon-circle-arrow-up"></span>
+                <a href="{{ url_for('upload',xcname=xc.xcname) }}"style="text-decoration: none">上传新图片</a>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div style="clear: both">
+    <div class="col-sm-6 col-md-3">
+        {% for tp in tp[0::4] %}
+            {% include '_tupian.html' %}
+        {% endfor %}
+    </div>
+    <div class="col-sm-6 col-md-3">
+        {% for tp in tp[1::4] %}
+            {% include '_tupian.html' %}
+        {% endfor %}
+    </div>
+    <div class="col-sm-6 col-md-3">
+        {% for tp in tp[2::4] %}
+            {% include '_tupian.html' %}
+        {% endfor %}
+    </div>
+    <div class="col-sm-6 col-md-3">
+        {% for tp in tp[3::4] %}
+            {% include '_tupian.html' %}
+        {% endfor %}
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var t;
+        $(".a").mouseenter(function(){
+            var ac = $(this);
+            t = setTimeout(function(){ ac.find(".b").show(200);},200);
+        }).mouseleave(function(){
+            clearTimeout(t);
+        });
+        $(".a").mouseleave(function(){
+            $(this).find(".b").hide(200);
+        });
+        $('.bianji').click(function(){
+            var $zhu = $(this).parent();
+            var $shu = $zhu.parent();
+            var $xinxi = $shu.find(".modal-body .xinxi").text();
+            var $name = $shu.find(".modal-header .tpname").text();
+            $shu.find(".modal-body .wenben").html($xinxi);
+            $shu.find(".modal-header .tpwenben").html($name);
+            $shu.find(".modal-header .tpname").hide();
+            $shu.find(".modal-header .tpwenben").show();
+            $shu.find(".modal-body .xinxi").hide();
+            $shu.find(".modal-body .wenben").show();
+            $(this).hide();
+            $zhu.find(".queren").show();
+            $zhu.find(".shanchu").hide();
+        });
+        $('.queren').click(function(){
+            var $zhu = $(this).parent();
+            var $shu = $zhu.parent();
+            $.ajax({
+                url:'/edit_tp',
+                data:JSON.stringify({
+                  'id': $shu.parent().parent().attr('id'),
+                  'body': $shu.find(".modal-body .wenben").val(),
+                  'tpname': $shu.find(".modal-header .tpwenben").val(),
+                }),
+                type:'POST',
+                dataType:'json'
+            }).done(function(data) {
+                $shu.find(".modal-body .xinxi").text(data.body);
+                $shu.find(".modal-header .tpname").text(data.tpname);
+                $shu.find(".modal-header .tpname").show();
+                $shu.find(".modal-header .tpwenben").hide();
+                $shu.find(".modal-body .xinxi").show();
+                $shu.find(".modal-body .wenben").hide();
+                $zhu.find(".queren").hide();
+                $zhu.find(".bianji").show();
+                $zhu.find(".shanchu").show();
+                var $ahu = $shu.parent().parent().parent();
+                $ahu.find(".btn-toolbar .tpname").text(data.tpname);
+                $ahu.find(".zxinxi").text(data.body);
+            });
+
+        });
+        $('.modal').on('hide.bs.modal', function() {
+            var $zhu = $(this).parent();
+            var $shu = $zhu.parent();
+            $shu.find(".modal-header .tpname").show();
+            $shu.find(".modal-header .tpwenben").hide();
+            $shu.find(".modal-body .xinxi").show();
+            $shu.find(".modal-body .wenben").hide();
+            $zhu.find(".queren").hide();
+            $zhu.find(".bianji").show();
+            $zhu.find(".shanchu").show();
+        });
+    });
+</script>
+{% endblock %}

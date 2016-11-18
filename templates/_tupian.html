@@ -1,0 +1,64 @@
+<div style="float: left">
+    <div class="a thumbnail">
+        <a href="#" data-toggle="modal" data-target="#{{ tp.id }}"><img src="{{ tp.lspath }}"></a>
+        <div>
+            <div class="b" style="padding-top: 5px;display: none">
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger btn-sm" style="position: absolute;left:2px;">
+                            <span class="glyphicon glyphicon-heart"></span>
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <p class="text-info tpname"
+                           style="font-size: 1.5em;font-weight: bolder;position: absolute;
+                                  left:50px;width: 150px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
+                            {{ tp.tpname }}
+                        </p>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success btn-sm" style="position: absolute;left:205px;">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </div>
+                </div>
+                <p style="width:240px;word-wrap: break-word;padding-top: 35px;text-indent: 20px;margin-bottom: -1px;"
+                   class="text-info zxinxi">{{ tp.about_tp }}</p>
+            </div>
+            <div class="modal fade" id="{{ tp.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 data-backdrop="static" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close guanbi" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            <h3 class="modal-title tpname">{{ tp.tpname }}</h3>
+                            <textarea class="form-control tpwenben" rows="1"
+                                      style="width: 300px;display: none"></textarea>
+                        </div>
+                        <div class="modal-body" style="clear: both">
+                            <div class="col-md-9">
+                                <img src="{{ tp.lspath }}" class="img-responsive center-block">
+                            </div>
+                            <div class="col-md-3">
+                                <p style="padding-right: 50px;width: 250px;word-wrap: break-word;text-indent: 20px;padding-top: 10px;font-size: 20px;"
+                                   class="xinxi text-info">{{ tp.about_tp }}</p>
+                                <textarea class="form-control wenben" rows="10"
+                                          style="display: none"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="clear: both">
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('delete_tp',id=tp.id) }}"
+                               class="btn btn-danger btn-sm shanchu" role="button">删除
+                            </a>
+                            <button type="button" class="btn btn-primary bianji">编辑</button>
+                            <button type="button" class="btn btn-primary queren" style="display: none">确认</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
