@@ -11,7 +11,7 @@
             {% if current_user.is_authenticated %}
             <button type="button" class="btn btn-lg btn-info">
                 <span class="glyphicon glyphicon-circle-arrow-up"></span>
-                <a href="{{ url_for('upload',xcname=xc.xcname) }}"style="text-decoration: none">上传新图片</a>
+                <a href="{{ url_for('.upload',xcname=xc.xcname) }}"style="text-decoration: none">上传新图片</a>
             </button>
             {% endif %}
         </div>

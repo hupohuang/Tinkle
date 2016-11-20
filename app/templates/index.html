@@ -31,7 +31,7 @@
 <div style="padding-top: 10px">
     {% for xc in fmlist %}
     <div class="col-md-3 a" style="padding-top: 20px">
-        <a href="{{ url_for('readxc',xcname=xc[0]) }}"><img src="{{ xc[1] }}"></a>
+        <a href="{{ url_for('.readxc',xcname=xc[0]) }}"><img src="{{ xc[1] }}"></a>
         <div class="b" style="position: absolute;top: 155px;display: none;
            width:200px; height:65px;background-color:rgba(0,0,0,0.3);">
             <h3 style="position: absolute;top: -20px;left: 10px;font-size: 1.5em;font-weight: bolder;color: deepskyblue;
