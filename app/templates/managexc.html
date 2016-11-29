@@ -24,14 +24,13 @@
         <td>{{ xc.member_since }}</td>
         <td>{{ xc.last_seen }}</td>
         <td>
-            <button type="button" class="btn btn-sm btn-warning">
-            <span class="glyphicon glyphicon-circle-arrow-up"></span>
-            <a href="{{ url_for('.delete_xc',id=xc.id) }}">删除</a>
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+                <a class="shanchu" href="{{ url_for('.delete_xc',id=xc.id) }}">删除</a>
             </button>
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
-
 {% endblock %}

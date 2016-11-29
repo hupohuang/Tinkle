@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-<div class="page-header">
-    <div style="clear: both">
-        <div class="col-md-4">
-            <p style="font-size: 50px;padding-bottom: 10px;">
-                <span class="glyphicon glyphicon-th-large"></span>{{ xc.xcname }}</p>
+<div>
+    <div style="clear: both;">
+        <div class="col-md-4" style="background: url(../static/xk1.png) no-repeat 0 0;width: 120px;height: 120px;">
+            <img src="{{ xc.fmpath }}" style="width: 100px;height: 100px;padding:15px 25px 10px 0px;">
+        </div>
+        <div class="col-md-6">
+            <p style="font-size: 50px;color: deepskyblue;margin-top: 40px;">{{ xc.xcname }}</p>
         </div>
         <div class="col-md-offset-10">
             {% if current_user.is_authenticated %}
-            <button type="button" class="btn btn-lg btn-info">
+            <button type="button" class="btn btn-lg btn-info" style="margin-top: 55px;">
                 <span class="glyphicon glyphicon-circle-arrow-up"></span>
                 <a href="{{ url_for('.upload',xcname=xc.xcname) }}"style="text-decoration: none">上传新图片</a>
             </button>
@@ -54,10 +56,6 @@
         $('.bianji').click(function(){
             var $zhu = $(this).parent();
             var $shu = $zhu.parent();
-            var $xinxi = $shu.find(".modal-body .xinxi").text();
-            var $name = $shu.find(".modal-header .tpname").text();
-            $shu.find(".modal-body .wenben").html($xinxi);
-            $shu.find(".modal-header .tpwenben").html($name);
             $shu.find(".modal-header .tpname").hide();
             $shu.find(".modal-header .tpwenben").show();
             $shu.find(".modal-body .xinxi").hide();
@@ -104,6 +102,26 @@
             $zhu.find(".queren").hide();
             $zhu.find(".bianji").show();
             $zhu.find(".shanchu").show();
+        });
+        $('.fm').click(function(){
+            var $q = $(this).parent().parent().parent().parent()
+            $.ajax({
+                url:'/edit_fm',
+                data:JSON.stringify({
+                  'id': $q.find('.modal').attr('id'),
+                }),
+                type:'POST',
+                dataType:'json'
+            }).done(function(data){
+                 if (data.r){
+                     alert('已更换封面');
+                     window.location.reload();
+                 }
+            });
+        });
+        $('.shanchu').click(function(){
+            var $b = $(this).parent().parent().parent().parent().parent().parent();
+            $b.hide(200);
         });
     });
 </script>

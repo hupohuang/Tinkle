@@ -4,6 +4,7 @@ from flask.ext.login import UserMixin
 from flask import current_app
 from datetime import datetime
 import os,shutil
+from PIL import Image
 
 @login_manager.user_loader
 def load_user(user_id):#Flask_Login要求程序实现的回调函数，使用指定的标识符加载用户
@@ -25,17 +26,39 @@ class XiangCe(db.Model):
     xcname = db.Column(db.String(64),unique=True)
     tpshu = db.Column(db.Integer,default=0)
     about_xc = db.Column(db.Text())
+    fmpath = db.Column(db.String(128))
     member_since = db.Column(db.DateTime(),default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(),default=datetime.utcnow)
     tupians = db.relationship('TuPian',backref='xiangce',lazy='dynamic')
 
     def jiayi(self):#图片数量+1
-        self.tpshu = XiangCe.tpshu + 1
+        self.tpshu = self.tpshu + 1
         db.session.add(self)
 
     def jianyi(self):#图片数量-1
-        self.tpshu = XiangCe.tpshu - 1
+        self.tpshu = self.tpshu - 1
         db.session.add(self)
+
+    def edit_fm(self,id):
+        tp = TuPian.query.filter_by(id=id).first()
+        xc = XiangCe.query.filter_by(id=tp.xiangce_id).first()
+        oldfm = TuPian.query.filter_by(xiangce_id=xc.id).filter_by(fm=True).first()
+        os.remove(current_app.config['UPLOAD_FOLDER']+xc.fmpath[16:])
+        oldfm.fm = False
+        tp.fm = True
+        db.session.add(oldfm,tp)
+        im = Image.open(current_app.config['UPLOAD_FOLDER']+tp.tppath[16:])
+        w,h = im.size
+        if w > h :
+            box = ((w-h)/2,0,(w-h)/2+h,h)
+            nim = im.crop(box)
+        if h > w :
+            box = (0,(h-w)/2,w,(h-w)/2+w)
+            nim = im.crop(box)
+        nim.thumbnail((200,200))#裁剪图片
+        nim.save(os.path.join(current_app.config['UPLOAD_FOLDER']+xc.xcname+"/fengmian/", tp.tpname+tp.geshi))
+        xc.fmpath = '../static/photo/'+xc.xcname+'/fengmian/'+tp.tpname+tp.geshi
+        db.session.add(xc)
 
     def upgrade_xc(self):#相册改动时间
         self.last_seen = datetime.utcnow()
@@ -43,10 +66,10 @@ class XiangCe(db.Model):
 
     def delete_xc(self):
         tp = TuPian.query.filter_by(xiangce_id=self.id).all()
-        if tp is not None:
+        if tp == '':
+            os.remove(current_app.config['UPLOAD_FOLDER'][:19]+self.fmpath[2:])
             for tp in tp:
                 os.remove(current_app.config['UPLOAD_FOLDER']+tp.tppath[16:])
-                os.remove(current_app.config['UPLOAD_FOLDER']+tp.fmpath[16:])
                 os.remove(current_app.config['UPLOAD_FOLDER']+tp.lspath[16:])
                 db.session.delete(tp)
         shutil.rmtree(current_app.config['UPLOAD_FOLDER']+self.xcname)
@@ -55,11 +78,12 @@ class XiangCe(db.Model):
 class TuPian(db.Model):
     __tablename__ = 'tupians'
     id = db.Column(db.Integer,primary_key=True)
+    fm = db.Column(db.Boolean)
     tppath = db.Column(db.String(128),unique=True)
-    fmpath = db.Column(db.String(128),unique=True)
     lspath = db.Column(db.String(128),unique=True)
     tpname = db.Column(db.String(64))
     about_tp = db.Column(db.Text())
+    geshi = db.Column(db.String(64))
     timestamp = db.Column(db.DateTime(),default=datetime.utcnow)
     last_since = db.Column(db.DateTime(),default=datetime.utcnow)
     xiangce_id = db.Column(db.Integer,db.ForeignKey('xiangces.id'))
@@ -72,8 +96,13 @@ class TuPian(db.Model):
     def delete_tp(self):
         xc = XiangCe.query.filter_by(id=self.xiangce_id).first()
         os.remove(current_app.config['UPLOAD_FOLDER']+self.tppath[16:])
-        os.remove(current_app.config['UPLOAD_FOLDER']+self.fmpath[16:])
         os.remove(current_app.config['UPLOAD_FOLDER']+self.lspath[16:])
+        if self.fm == True:
+            tp = TuPian.query.filter_by(xiangce_id=xc.id).filter_by(fm=False).first()
+            if tp == '':
+                xc.fmpath = "../static/fm.jpg"
+            else:
+                xc.edit_fm(tp.id)
         db.session.delete(self)
         xc.jianyi()
         xc.upgrade_xc()

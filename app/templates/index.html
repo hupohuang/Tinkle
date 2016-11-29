@@ -29,18 +29,64 @@
     <div type="button" class="btn btn-lg btn-info" style="width: 250px">相册</div>
 </div>
 <div style="padding-top: 10px">
-    {% for xc in fmlist %}
-    <div class="col-md-3 a" style="padding-top: 20px">
-        <a href="{{ url_for('.readxc',xcname=xc[0]) }}"><img src="{{ xc[1] }}"></a>
-        <div class="b" style="position: absolute;top: 155px;display: none;
-           width:200px; height:65px;background-color:rgba(0,0,0,0.3);">
-            <h3 style="position: absolute;top: -20px;left: 10px;font-size: 1.5em;font-weight: bolder;color: deepskyblue;
-               width: 180px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
-                {{ xc[0] }}
-            </h3>
-            <p style="width:180px;word-wrap: break-word;padding-top: 20px;text-indent: 20px;margin-bottom: -1px;color: #ffffff">
-                所发生纠纷basf不
-            </p>
+    {% for xc in xclist %}
+    <div>
+        <div class="col-md-3 a" style="padding-top: 12px;padding-left: 12px;
+            background: url(../static/xk.png) no-repeat 0 0;width: 250px;height: 250px;">
+            {% if current_user.is_authenticated %}
+            <a class="c" href="#"  data-toggle="modal" data-target="#{{ xc.id }}"
+            style="background: url(../static/bj5.png) no-repeat -200px -250px;transition: background-position 0.5s Linear;
+                width: 78px;height: 76px;position: absolute;top: -10px;left: -15px;" title="编辑"></a>
+            {% endif %}
+            <a href="{{ url_for('.readxc',xcname=xc.xcname) }}">
+                <img src="{{ xc.fmpath }}" alt="错误">
+            </a>
+            <div class="b" style="position: absolute;display: none;bottom: 37px;
+                width:200px; height:65px;background-color:rgba(0,0,0,0.3);">
+                <h3 class="xcname" style="position: absolute;top: -20px;left: 10px;font-size: 1.5em;font-weight: bolder;
+                    color: deepskyblue;width: 180px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
+                    {{ xc.xcname }}
+                </h3>
+                <p class="aboutxc" style="width:180px;word-wrap: break-word;padding-top: 20px;
+                    text-indent: 20px;margin-bottom: -1px;color: #ffffff">
+                    {{ xc.about_xc }}
+                </p>
+            </div>
+        </div>
+        <div class="modal fade" id="{{ xc.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            编辑相册
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <label>相册名</label>
+                        <input type="text" class="form-control xcname" value="{{ xc.xcname }}">
+                        <label>描述</label>
+                        <textarea class="form-control aboutxc">{{ xc.about_xc }}</textarea>
+                        <label>是否可见</label>
+                        <div>
+                            <label class="checkbox-inline">
+		                        <input type="radio" name="optionsRadiosinline" id="shi" checked> 是
+	                        </label>
+	                        <label class="checkbox-inline">
+		                        <input type="radio" name="optionsRadiosinline" id="fou"> 否
+	                        </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ url_for('.delete_xc',id=xc.id)}}"
+                           class="btn btn-danger btn-sm shanchu" role="button">删除
+                        </a>
+                        <button class="btn btn-default queren" id="submit" name="submit" type="submit">确认</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}
@@ -50,12 +96,41 @@
 	    var t;
         $(".a").mouseenter(function(){
             var ac = $(this);
-                    t = setTimeout(function(){ ac.find(".b").slideDown(300);},300);
+            t = setTimeout(function(){
+                ac.find(".b").slideDown(300);
+                ac.find(".c").css("background-position","-133px -174px");
+            },300);
         }).mouseleave(function(){
             clearTimeout(t);
         });
         $(".a").mouseleave(function(){
             $(this).find(".b").slideUp(300);
+            $(this).find(".c").css("background-position","-200px -250px");
+        });
+        $(".queren").click(function(){
+            var $xcname = $(this).parent().parent().find(".xcname").val();
+            var $aboutxc= $(this).parent().parent().find(".aboutxc").val();
+            var $s = $(this).parent().parent().parent().parent();
+            $.ajax({
+                url:'/edit_xc',
+                data:JSON.stringify({
+                  'id': $s.attr('id'),
+                  'xcname': $xcname,
+                  'aboutxc': $aboutxc,
+                }),
+                type:'POST',
+                dataType:'json'
+            }).done(function(data){
+                var $x = $s.parent();
+                $x.find("h3.xcname").text(data.xcname);
+                $x.find("p.aboutxc").text(data.aboutxc);
+                $('.modal').modal('hide');
+            });
+        });
+        $('.shanchu').click(function(){
+            var $s = $(this).parent().parent().parent().parent().parent();
+            $('.modal').modal('hide');
+            $s.hide(400);
         });
     });
 </script>
