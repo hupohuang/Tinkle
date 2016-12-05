@@ -2,10 +2,10 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-<div class="page-header">
+<div class="page-header" style="color: deepskyblue;margin-top: -20px;">
     <h1>管理相册</h1>
 </div>
-<table class="table table-hover">
+<table class="table" style="color: white">
     <thead>
     <tr>
         <th>相册名</th>
@@ -18,19 +18,28 @@
     <tbody>
     {% for xc in xc %}
     <tr>
-        <td><a href="{{ url_for('.readxc',xcname=xc.xcname) }}" style="text-decoration: none">{{ xc.xcname }}</a></td>
+        <td><a class="xc" href="{{ url_for('.readxc',xcname=xc.xcname) }}">{{ xc.xcname }}</a></td>
         <td>{{ xc.tpshu }}</td>
         <td>{{ xc.about_xc }}</td>
         <td>{{ xc.member_since }}</td>
         <td>{{ xc.last_seen }}</td>
         <td>
             <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-remove"></span>
-                <a class="shanchu" href="{{ url_for('.delete_xc',id=xc.id) }}">删除</a>
+                <a class="shanchu" href="{{ url_for('.delete_xc',id=xc.id) }}" style="text-decoration: none;color: white;">
+                    <span class="glyphicon glyphicon-remove"></span> 删除</a>
             </button>
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+<style type="text/css">
+    a.xc {
+        color: white;
+    }
+    a.xc:hover {
+        text-decoration: none;
+        color: deepskyblue;
+    }
+</style>
 {% endblock %}

@@ -4,6 +4,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
+    TINKLE_ADMIN = 'roger'
     SECRET_KEY = 'hard to guess string'
     UPLOAD_FOLDER = 'f:/ceshi/Tinkle/app/static/photo/'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True#每次请求结束后都会自动提交数据库中的变动

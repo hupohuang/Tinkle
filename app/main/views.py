@@ -2,7 +2,7 @@
 from flask import render_template,redirect,url_for,request,flash,jsonify,current_app
 from . import main
 from ..models import User,XiangCe,TuPian
-from .forms import LoginForm,XcForm,TpForm
+from .forms import LoginForm,XcForm,TpForm,RegistrationForm
 from .. import db
 from flask.ext.login import login_user,logout_user,login_required
 import os,re
@@ -15,7 +15,7 @@ def allowed_file(filename):#允许传入的文件的格式
 
 @main.route('/')
 def index():
-    form = LoginForm()
+    loginform = LoginForm()
     xclist = XiangCe.query.all()
     xcshu = len(xclist)
     tplist= []#轮播图片列表
@@ -26,14 +26,24 @@ def index():
             tplist.append(tppath)
             continue
         tplist.append(tp.tppath)
-    return render_template('index.html',tplist=tplist,form=form,xclist=xclist)
+    return render_template('index.html',tplist=tplist,loginform=loginform,xclist=xclist)
+
+@main.route('/register',methods=['GET','POST'])
+def register():
+    loginform = LoginForm()
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data,password=form.password.data)
+        db.session.add(user)
+        return redirect(url_for('.index'))
+    return render_template('register.html',form=form,loginform=loginform)
 
 @main.route('/login',methods=['GET','POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is not None and user.verify_password(form.password.data):
+    loginform = LoginForm()
+    if loginform.validate_on_submit():
+        user = User.query.filter_by(username=loginform.username.data).first()
+        if user is not None and user.verify_password(loginform.password.data):
             login_user(user)#在用户会话中把用户标记为已登陆
             return jsonify({'r':0})#返回json数据
         error = '用户不存在或密码错误'
@@ -73,7 +83,7 @@ def managexc():
 
 @main.route('/xiangce/<xcname>')
 def readxc(xcname):
-    form = LoginForm()
+    loginform = LoginForm()
     xc = XiangCe.query.filter_by(xcname=xcname).first()
     tp = TuPian.query.filter_by(xiangce_id=xc.id).all()
     return render_template('xiangce.html',xc=xc,tp=tp,form=form)

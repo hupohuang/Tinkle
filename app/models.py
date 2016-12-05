@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import db,login_manager
-from flask.ext.login import UserMixin
+from flask.ext.login import UserMixin,AnonymousUserMixin
 from flask import current_app
 from datetime import datetime
 import os,shutil
@@ -10,15 +10,66 @@ from PIL import Image
 def load_user(user_id):#Flask_Login要求程序实现的回调函数，使用指定的标识符加载用户
     return User.query.get(int(user_id))
 
+class Permission:
+    USER = 0x07
+    ADMINISTER = 0xff
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(64),unique=True)
+    default = db.Column(db.Boolean,default=False,index=True)
+    permissions = db.Column(db.Integer)
+    users = db.relationship('User',backref='role',lazy='dynamic')
+
+    @staticmethod
+    def insert_roles():
+        roles = {
+            'User': (Permission.USER, True),
+            'Administrator': (Permission.ADMINISTER, False)
+        }
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
+        db.session.commit()
+
 class User(UserMixin,db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(64),unique=True)
     password = db.Column(db.String(128))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+    def __init__(self,**kwargs):
+        super(User,self).__init__(**kwargs)
+        if self.role is None:
+            if self.username == current_app.config['TINKLE_ADMIN']:
+                self.role = Role.query.filter_by(permissions=0xff).first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
 
     def verify_password(self,password):#密码认证
         if self.password == password:
             return True
+
+    def can(self,permissions):
+        return self.role is not None and (self.role.permissions & permissions) == permissions
+
+    def is_administrator(self):
+        return self.can(Permission.ADMINISTER)
+
+class AnonymouseUser(AnonymousUserMixin):
+    def can(self,permissions):
+        return False
+
+    def is_administrator(self):
+        return False
+
+login_manager.anonymous_user = AnonymouseUser
 
 class XiangCe(db.Model):
     __tablename__ = 'xiangces'
@@ -68,6 +119,7 @@ class XiangCe(db.Model):
         tp = TuPian.query.filter_by(xiangce_id=self.id).all()
         if tp == '':
             os.remove(current_app.config['UPLOAD_FOLDER'][:19]+self.fmpath[2:])
+        else:
             for tp in tp:
                 os.remove(current_app.config['UPLOAD_FOLDER']+tp.tppath[16:])
                 os.remove(current_app.config['UPLOAD_FOLDER']+tp.lspath[16:])

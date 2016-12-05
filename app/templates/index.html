@@ -47,8 +47,9 @@
                     color: deepskyblue;width: 180px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
                     {{ xc.xcname }}
                 </h3>
-                <p class="aboutxc" style="width:180px;word-wrap: break-word;padding-top: 20px;
-                    text-indent: 20px;margin-bottom: -1px;color: #ffffff">
+                <p class="aboutxc" style="width:200px;height:60px;word-wrap: break-word;padding-top: 20px;
+                    text-indent: 20px;margin-bottom: -1px;color: #ffffff;overflow:hidden;text-overflow: ellipsis;"
+                   title="{{ xc.about_xc }}">
                     {{ xc.about_xc }}
                 </p>
             </div>
@@ -83,7 +84,7 @@
                         <a href="{{ url_for('.delete_xc',id=xc.id)}}"
                            class="btn btn-danger btn-sm shanchu" role="button">删除
                         </a>
-                        <button class="btn btn-default queren" id="submit" name="submit" type="submit">确认</button>
+                        <button class="btn btn-info btn-sm queren" id="submit" name="submit" type="submit">确认</button>
                     </div>
                 </div>
             </div>

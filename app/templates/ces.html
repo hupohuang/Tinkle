@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="gb2312">
+    <title>jquery</title>
+    <style>
+        body{margin:0}
+    </style>
+</head>
+<body>
+
+<div class="grid">
+	 {% for tp in tp %}
+		<img src="{{ tp.lspath }}" style="width:245px;">
+	{% endfor %}
+</div>
+
+<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/gridify.js"></script>
+<script type="text/javascript">
+	$(window).load(function() {
+		var options =
+		{
+			srcNode: 'img',             // grid items (class, node)
+			margin: '20px',             // margin in pixel, default: 0px
+			width: '250px',             // grid item width in pixel, default: 220px
+			max_width: '',              // dynamic gird item width if specified, (pixel)
+			resizable: true,            // re-layout if window resize
+			transition: 'all 0.5s ease' // support transition for CSS3, default: all 0.5s ease
+		}
+		$('.grid').gridify(options);
+	});
+</script>
+
+</body>
+</html>
