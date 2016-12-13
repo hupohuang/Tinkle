@@ -27,9 +27,6 @@
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                         {% endif %}
-                        <a href="{{ url_for('.delete_tp',id=tp.id) }}" type="button" class="btn btn-danger btn-sm shanchu" style="position: absolute;left:169px;" title="删除图片">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
                     </div>
                     {% endif %}
                 </div>
@@ -60,10 +57,8 @@
                         </div>
                         <div class="modal-footer" style="clear: both">
                             {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('.delete_tp',id=tp.id) }}"
-                               class="btn btn-danger btn-sm shanchu" role="button">删除
-                            </a>
-                            <button type="button" class="btn btn-primary bianji">编辑</button>
+                            <button type="button" class="btn btn-danger btn-sm shanchu">删除</button>
+                            <button type="button" class="btn btn-primary btn-sm bianji">编辑</button>
                             <button type="button" class="btn btn-primary queren" style="display: none">确认</button>
                             {% endif %}
                         </div>

@@ -151,7 +151,7 @@ class TuPian(db.Model):
         os.remove(current_app.config['UPLOAD_FOLDER']+self.lspath[16:])
         if self.fm == True:
             tp = TuPian.query.filter_by(xiangce_id=xc.id).filter_by(fm=False).first()
-            if tp == '':
+            if tp is None:
                 xc.fmpath = "../static/fm.jpg"
             else:
                 xc.edit_fm(tp.id)

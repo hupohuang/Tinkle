@@ -71,6 +71,9 @@ def createxc():
             os.mkdir(current_app.config['UPLOAD_FOLDER']+form.xcname.data+'/fengmian')
             os.mkdir(current_app.config['UPLOAD_FOLDER']+form.xcname.data+'/luesuo')
             #创建相册文件夹
+        else:
+            flash('有同名相册')
+            return render_template('createxc.html', form=form)
         return redirect(url_for('.index'))
     return render_template('createxc.html', form=form)
 
@@ -86,7 +89,7 @@ def readxc(xcname):
     loginform = LoginForm()
     xc = XiangCe.query.filter_by(xcname=xcname).first()
     tp = TuPian.query.filter_by(xiangce_id=xc.id).all()
-    return render_template('xiangce.html',xc=xc,tp=tp,form=form)
+    return render_template('xiangce.html',xc=xc,tp=tp,loginform=loginform)
 
 @main.route('/tp/<int:id>')
 def tupian(id):
@@ -144,7 +147,7 @@ def upload(xcname):
             #查找同一相册文件夹内是否有同名图片
                 for file in files:
                     if file == fname:
-                        flash('警告')
+                        flash('相册内已有同名图片')
                         return render_template('upload.html',form=form)
             f.save(os.path.join(current_app.config['UPLOAD_FOLDER']+xcname,fname))
             name = re.match(r'([a-zA-Z0-9_]+)\.[a-zA-Z0-9]+$',fname).group(1)
@@ -152,7 +155,7 @@ def upload(xcname):
             tp = TuPian.query.filter_by(xiangce_id=xiangce.id).all()
             for tp in tp:#查找同一相册数据库内是否有同名图片
                 if name == tp.tpname:
-                    flash('警告')
+                    flash('相册内已有同名图片')
                     return render_template('upload.html',form=form)
             f.save(os.path.join(current_app.config['UPLOAD_FOLDER']+xcname,name+geshi))
         im = Image.open(current_app.config['UPLOAD_FOLDER']+xcname+'/'+name+geshi)
@@ -189,17 +192,20 @@ def edit_fm():
     xc.edit_fm(id)
     return jsonify({'r':1})
 
-@main.route('/delete-tp/<int:id>')
+@main.route('/delete_tp',methods=['POST'])
 @login_required
-def delete_tp(id):
+def delete_tp():
+    data = request.get_json('data')
+    id = data['id']
     tp = TuPian.query.get_or_404(id)
-    xc = XiangCe.query.filter_by(id=tp.xiangce_id).first()
     tp.delete_tp()
-    return (''),204
+    return jsonify({'r':1})
 
-@main.route('/delete-xc/<int:id>')
+@main.route('/delete_xc',methods=['POST'])
 @login_required
-def delete_xc(id):
+def delete_xc():
+    data = request.get_json('data')
+    id = data['id']
     xc = XiangCe.query.get_or_404(id)
     xc.delete_xc()
-    return (''),204
+    return jsonify({'r':1})

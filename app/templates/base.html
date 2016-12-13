@@ -7,6 +7,8 @@
     <link rel="icon" href="{{ url_for('static', filename='tinkle.ico') }}" type="image/x-icon">
 	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static',filename='js/sweetalert.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='js/sweetalert.css') }}">
     <style type="text/css">
         .navbar {
             background-color: firebrick;
@@ -43,7 +45,9 @@
     </style>
     {% for message in get_flashed_messages() %}
     <script type="text/javascript">
-        alert('{{ message }}')
+        $(function(){
+            swal('{{ message }}');
+        });
     </script>
     {% endfor %}
 </head>
@@ -79,12 +83,13 @@
     <div class="nav nav-pills nav-stacked">
         <div class="col-md-12">
             <ul class="breadcrumb">
-                <li><a href="#">首页</a></li>
+                <li><a href="/">首页</a></li>
                 <li><a href="#">相册</a></li>
             </ul>
         </div>
     </div>
-    {% block page_content %}{% endblock %}
+    {% block page_content %}
+    {% endblock %}
 </div>
 <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -102,6 +107,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" id="submit" name="submit" type="submit">登陆</button>
+                <button class="ces">ces</button>
                 <div id="tishi" style="color: red;font-size: 20px;display: none;font-weight: bolder;"></div>
             </div>
         </div>
@@ -109,6 +115,9 @@
 </div>
 <script type="text/javascript">
     $(function(){
+        $('.ces').click(function(){
+            swal("hello")
+        });
         $('.btn').click(function(){
             var $tishi = $('#tishi');
             var $username = $('input[name="username"]').val();

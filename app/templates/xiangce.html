@@ -114,14 +114,44 @@
                 dataType:'json'
             }).done(function(data){
                  if (data.r){
-                     alert('已更换封面');
-                     window.location.reload();
+                     swal({
+                         title:'已更换封面',
+                         type:"success",
+                     },function(){
+                         window.location.reload();
+                     });
                  }
             });
         });
         $('.shanchu').click(function(){
-            var $b = $(this).parent().parent().parent().parent().parent().parent();
-            $b.hide(200);
+            var $b = $(this).parent().parent().parent().parent();
+            swal({
+                title:"删除图片",
+                text:"删除图片",
+                type:"warning",
+                showCancelButton:true,
+                confirmButtonColor:"#DD6B55",
+                confirmButtonText:"删除",
+                cancelButtonText:"取消",
+                closeOnConfirm:false,
+            },
+            function(){
+                $.ajax({
+                    type:'POST',
+                    url:'/delete_tp',
+                    data:JSON.stringify({
+                        'id': $b.attr('id'),
+                    }),
+                    dataType:'json',
+                    success: function(data,status){
+                        if(status == 'success'){
+                            swal("删除图片","已删除图片！","success");
+                            $('.modal').modal('hide');
+                            $b.parent().parent().hide(200);
+                        }
+                    },
+                });
+            });
         });
     });
 </script>

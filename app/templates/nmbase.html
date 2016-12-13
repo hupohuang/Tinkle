@@ -6,6 +6,8 @@
     <link rel="icon" href="{{ url_for('static', filename='tinkle.ico') }}" type="image/x-icon">
 	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static',filename='js/sweetalert.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='js/sweetalert.css') }}">
     <style type="text/css">
         .navbar {
             background-color: firebrick;
@@ -42,7 +44,9 @@
     </style>
     {% for message in get_flashed_messages() %}
     <script type="text/javascript">
-        alert('{{ message }}')
+        $(function(){
+            swal('警告！','{{ message }}！','error');
+        });
     </script>
     {% endfor %}
 </head>
@@ -82,13 +86,13 @@
     </div>
     {% block page_content %}{% endblock %}
 </div>
-<script type="text/javascript">
+<!--<script type="text/javascript">
     $(function(){
         $('.shanchu').click(function(){
             var $s = $(this).parent().parent().parent();
             $s.hide(300);
         });
     });
-</script>
+</script>-->
 </body>
 </html>
