@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-<div class="page-header" style="color: deepskyblue;margin-top: -20px;">
+<div class="page-header creatxc">
     <h1>管理相册</h1>
 </div>
 <table class="table" style="color: white">
@@ -18,13 +18,13 @@
     <tbody>
     {% for xc in xc %}
     <tr id="{{ xc.id }}">
-        <td><a class="xc" href="{{ url_for('.readxc',xcname=xc.xcname) }}">{{ xc.xcname }}</a></td>
+        <td><a class="manage-xc" href="{{ url_for('.readxc',xcname=xc.xcname) }}">{{ xc.xcname }}</a></td>
         <td>{{ xc.tpshu }}</td>
         <td>{{ xc.about_xc }}</td>
         <td>{{ xc.member_since }}</td>
         <td>{{ xc.last_seen }}</td>
         <td>
-            <button type="button" class="shanchu btn btn-sm btn-danger">
+            <button type="button" class="shanchuxc btn btn-sm btn-danger">
                     <span class="glyphicon glyphicon-remove"></span> 删除</a>
             </button>
         </td>
@@ -32,46 +32,4 @@
     {% endfor %}
     </tbody>
 </table>
--<style type="text/css">
-    a.xc {
-        color: white;
-    }
-    a.xc:hover {
-        text-decoration: none;
-        color: deepskyblue;
-    }
-</style>
-<script type="text/javascript">
-    $(function(){
-        $('.shanchu').click(function(){
-            var $q = $(this).parent().parent();
-            swal({
-                title:"删除相册",
-                text:"删除相册",
-                type:"warning",
-                showCancelButton:true,
-                confirmButtonColor:"#DD6B55",
-                confirmButtonText:"删除",
-                cancelButtonText:"取消",
-                closeOnConfirm:false,
-            },
-            function(){
-                $.ajax({
-                    type:'POST',
-                    url:'/delete_xc',
-                    data:JSON.stringify({
-                        'id': $q.attr('id'),
-                    }),
-                    dataType:'json',
-                    success: function(data,status){
-                        if(status == 'success'){
-                            swal("OK");
-                            $q.hide(200);
-                        }
-                    },
-                });
-            });
-        });
-    });
-</script>
 {% endblock %}

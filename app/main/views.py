@@ -4,7 +4,7 @@ from . import main
 from ..models import User,XiangCe,TuPian
 from .forms import LoginForm,XcForm,TpForm,RegistrationForm
 from .. import db
-from flask.ext.login import login_user,logout_user,login_required
+from flask.ext.login import login_user,logout_user,login_required,current_user
 import os,re
 from PIL import Image
 from werkzeug import secure_filename
@@ -20,7 +20,7 @@ def index():
     xcshu = len(xclist)
     tplist= []#轮播图片列表
     for i in range(xcshu):
-        tp = TuPian.query.filter_by(xiangce_id=xclist[i].id).first()
+        tp = TuPian.query.filter_by(xiangce_id=xclist[i].id).filter_by(fm=True).first()
         if tp is None:
             tppath = "../static/1.jpg"
             tplist.append(tppath)
@@ -45,6 +45,7 @@ def login():
         user = User.query.filter_by(username=loginform.username.data).first()
         if user is not None and user.verify_password(loginform.password.data):
             login_user(user)#在用户会话中把用户标记为已登陆
+            user.ping()
             return jsonify({'r':0})#返回json数据
         error = '用户不存在或密码错误'
         return jsonify({'r':1,'error':error})
@@ -65,14 +66,15 @@ def createxc():
     if form.validate_on_submit():
         xiangce = XiangCe.query.filter_by(xcname=form.xcname.data).first()
         if xiangce is None:
-            xiangce = XiangCe(xcname = form.xcname.data,about_xc=form.aboutxc.data,fmpath="../static/fm.jpg")
+            xiangce = XiangCe(xcname = form.xcname.data,about_xc=form.aboutxc.data,
+                              fmpath="../static/fm.jpg",user=current_user._get_current_object())
             db.session.add(xiangce)
             os.mkdir(current_app.config['UPLOAD_FOLDER']+form.xcname.data)
             os.mkdir(current_app.config['UPLOAD_FOLDER']+form.xcname.data+'/fengmian')
             os.mkdir(current_app.config['UPLOAD_FOLDER']+form.xcname.data+'/luesuo')
             #创建相册文件夹
         else:
-            flash('有同名相册')
+            flash('已有同名相册')
             return render_template('createxc.html', form=form)
         return redirect(url_for('.index'))
     return render_template('createxc.html', form=form)
@@ -80,9 +82,8 @@ def createxc():
 @main.route('/managexc')
 @login_required
 def managexc():
-    xc = XiangCe.query.all()
-    tp = TuPian.query.all()
-    return render_template('managexc.html',xc=xc,tp=tp)
+    xc = XiangCe.query.filter_by(user_id=current_user.id).all()
+    return render_template('managexc.html',xc=xc)
 
 @main.route('/xiangce/<xcname>')
 def readxc(xcname):

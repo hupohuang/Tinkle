@@ -42,6 +42,9 @@ class User(UserMixin,db.Model):
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(64),unique=True)
     password = db.Column(db.String(128))
+    member_since = db.Column(db.DateTime(),default=datetime.now)
+    last_seen = db.Column(db.DateTime(),default=datetime.now)
+    xiangces = db.relationship('XiangCe',backref='user',lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __init__(self,**kwargs):
@@ -62,6 +65,10 @@ class User(UserMixin,db.Model):
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
 
+    def ping(self):
+        self.last_seen = datetime.now()
+        db.session.add(self)
+
 class AnonymouseUser(AnonymousUserMixin):
     def can(self,permissions):
         return False
@@ -78,9 +85,10 @@ class XiangCe(db.Model):
     tpshu = db.Column(db.Integer,default=0)
     about_xc = db.Column(db.Text())
     fmpath = db.Column(db.String(128))
-    member_since = db.Column(db.DateTime(),default=datetime.utcnow)
-    last_seen = db.Column(db.DateTime(),default=datetime.utcnow)
+    member_since = db.Column(db.DateTime(),default=datetime.now)
+    last_seen = db.Column(db.DateTime(),default=datetime.now)
     tupians = db.relationship('TuPian',backref='xiangce',lazy='dynamic')
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 
     def jiayi(self):#图片数量+1
         self.tpshu = self.tpshu + 1
@@ -136,10 +144,9 @@ class TuPian(db.Model):
     tpname = db.Column(db.String(64))
     about_tp = db.Column(db.Text())
     geshi = db.Column(db.String(64))
-    timestamp = db.Column(db.DateTime(),default=datetime.utcnow)
-    last_since = db.Column(db.DateTime(),default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime(),default=datetime.now)
+    last_since = db.Column(db.DateTime(),default=datetime.now)
     xiangce_id = db.Column(db.Integer,db.ForeignKey('xiangces.id'))
-
 
     def upgrade_tp(self):#图片改动时间
         self.last_seen = datetime.utcnow()

@@ -3,14 +3,14 @@
 {% block page_content %}
 <div class="row">
     <div class="col-md-offset-3">
-        <div id="myCarousel" class="carousel slide" style="width: 700px;clear: both">
+        <div id="myCarousel" class="carousel slide">
 	        <div class="carousel-inner" align="center">
                 <div class="item active">
-			        <img src="{{ tplist[0] }}" style="height: 450px">
+			        <img src="{{ tplist[0] }}">
 		        </div>
                 {% for tppath in tplist[1:] %}
 		        <div class="item">
-			        <img src="{{ tppath }}" style="height: 450px">
+			        <img src="{{ tppath }}">
 		        </div>
                 {% endfor %}
 	        </div>
@@ -18,40 +18,33 @@
 	            data-slide="prev">
                 <span class="glyphicon glyphicon-chevron-left"></span>
             </a>
-	        <a class="carousel-control right" href="#myCarousel"
-	            data-slide="next">
+	        <a class="carousel-control right" href="#myCarousel" data-slide="next">
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </a>
         </div>
     </div>
 </div>
-<div class="nav nav-pills nav-stacked" style="padding-top: 30px">
-    <div type="button" class="btn btn-lg btn-info" style="width: 250px">相册</div>
+<div class="nav nav-pills nav-stacked">
+    <div type="button" class="btn btn-lg btn-info index-btn">相册</div>
 </div>
-<div style="padding-top: 10px">
+<div class="index-content">
     {% for xc in xclist %}
     <div>
-        <div class="col-md-3 a" style="padding-top: 12px;padding-left: 12px;
-            background: url(../static/xk.png) no-repeat 0 0;width: 250px;height: 250px;">
-            {% if current_user.is_authenticated %}
-            <a class="c" href="#"  data-toggle="modal" data-target="#{{ xc.id }}"
-            style="background: url(../static/bj5.png) no-repeat -200px -250px;transition: background-position 0.5s Linear;
-                width: 78px;height: 76px;position: absolute;top: -10px;left: -15px;" title="编辑"></a>
+        <div class="col-md-3 index-list">
+            {% if current_user.is_authenticated and current_user == xc.user %}
+            <a class="index-edit" href="#"  data-toggle="modal" data-target="#{{ xc.id }}" title="编辑"></a>
             {% endif %}
             <a href="{{ url_for('.readxc',xcname=xc.xcname) }}">
                 <img src="{{ xc.fmpath }}" alt="错误">
             </a>
-            <div class="b" style="position: absolute;display: none;bottom: 37px;
-                width:200px; height:65px;background-color:rgba(0,0,0,0.3);">
-                <h3 class="xcname" style="position: absolute;top: -20px;left: 10px;font-size: 1.5em;font-weight: bolder;
-                    color: deepskyblue;width: 180px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
+            <div class="index-shadow">
+                <h3 class="xcname">
                     {{ xc.xcname }}
                 </h3>
-                <p class="aboutxc" style="width:200px;height:60px;word-wrap: break-word;padding-top: 20px;
-                    text-indent: 20px;margin-bottom: -1px;color: #ffffff;overflow:hidden;text-overflow: ellipsis;"
-                   title="{{ xc.about_xc }}">
+                <p class="aboutxc" title="{{ xc.about_xc }}">
                     {{ xc.about_xc }}
                 </p>
+                <p>由 {{ xc.user.username }} 创建</p>
             </div>
         </div>
         <div class="modal fade" id="{{ xc.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -69,7 +62,7 @@
                         <label>相册名</label>
                         <input type="text" class="form-control xcname" value="{{ xc.xcname }}">
                         <label>描述</label>
-                        <textarea class="form-control aboutxc">{{ xc.about_xc }}</textarea>
+                        <textarea class="form-control edit-aboutxc">{{ xc.about_xc }}</textarea>
                         <label>是否可见</label>
                         <div>
                             <label class="checkbox-inline">
@@ -93,22 +86,22 @@
 <script type="text/javascript">
     $(function(){
 	    var t;
-        $(".a").mouseenter(function(){
+        $(".index-list").mouseenter(function(){
             var ac = $(this);
             t = setTimeout(function(){
-                ac.find(".b").slideDown(300);
-                ac.find(".c").css("background-position","-133px -174px");
+                ac.find(".index-shadow").slideDown(300);
+                ac.find(".index-edit").css("background-position","-133px -174px");
             },300);
         }).mouseleave(function(){
             clearTimeout(t);
         });
-        $(".a").mouseleave(function(){
-            $(this).find(".b").slideUp(300);
-            $(this).find(".c").css("background-position","-200px -250px");
+        $(".index-list").mouseleave(function(){
+            $(this).find(".index-shadow").slideUp(300);
+            $(this).find(".index-edit").css("background-position","-200px -250px");
         });
         $(".queren").click(function(){
             var $xcname = $(this).parent().parent().find(".xcname").val();
-            var $aboutxc= $(this).parent().parent().find(".aboutxc").val();
+            var $aboutxc= $(this).parent().parent().find(".edit-aboutxc").val();
             var $s = $(this).parent().parent().parent().parent();
             $.ajax({
                 url:'/edit_xc',

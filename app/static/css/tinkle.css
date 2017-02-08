@@ -1,0 +1,212 @@
+/*base*/
+body {
+    padding-bottom: 8cm;
+    background: url(../bg.jpg) fixed;
+}
+a:hover {
+    text-decoration: none;
+}
+.navbar {
+    background-color: firebrick;
+}
+a.navbar-brand.tinkle {
+    color: white;
+}
+a.navbar-brand.tinkle:hover {
+    color: deepskyblue;
+}
+.nav.navbar-nav > li > a {
+    color: white;
+}
+.nav.navbar-nav > li > a:hover {
+    color: deepskyblue;
+}
+.breadcrumb {
+    background-color: firebrick;
+    margin-top: -21px;
+}
+.breadcrumb > li + li:before {
+    color: white;
+    content: " ";
+    padding: 0 30px;
+}
+.breadcrumb > li > a:hover {
+    color: deepskyblue;
+    text-decoration: none;
+}
+.breadcrumb > li > a {
+    color: white;
+    font-size: 18px;
+}
+#tishi {
+    color: red;
+    font-size: 20px;
+    display: none;
+    font-weight: bolder;
+}
+/*index*/
+#myCarousel {
+    width: 700px;
+    clear: both;
+}
+#myCarousel img {
+    height: 450px;
+}
+.nav.nav-pills.nav-stacked {
+    padding-top: 30px;
+}
+.btn.btn-lg.btn-info.index-btn {
+    width: 250px;
+}
+.index-content {
+    padding-top: 10px;
+}
+.index-list {
+    padding-top: 12px;
+    padding-left: 12px;
+    background: url(../xk.png) no-repeat 0 0;
+    width: 250px;
+    height: 250px;
+}
+.index-shadow {
+    position: absolute;
+    display: none;
+    bottom: 37px;
+    width:200px;
+    height:65px;
+    background-color:rgba(0,0,0,0.3);
+}
+.index-edit {
+    background: url(../bj5.png) no-repeat -200px -250px;
+    transition: background-position 0.3s Linear;
+    width: 78px;
+    height: 76px;
+    position: absolute;
+    top: -10px;
+    left: -15px;
+}
+.index-shadow h3{
+    position: absolute;
+    top: -20px;
+    left: 10px;
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: deepskyblue;
+    width: 180px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+.index-shadow p {
+    color: #ffffff;
+}
+.aboutxc{
+    width:200px;
+    height:60px;
+    word-wrap: break-word;
+    padding-top: 20px;
+    text-indent: 20px;
+    margin-bottom: -1px;
+    color: #ffffff;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+/*xiangce*/
+.xc-content {
+    height: 140px;
+}
+.xc-img {
+    background: url(../xk1.png) no-repeat 0 0;
+    width: 120px;
+    height: 120px;
+}
+.xc-img>img {
+    width: 100px;
+    height: 100px;
+    padding:15px 25px 10px 0px;
+}
+.xc-name>p {
+    font-size: 50px;
+    color: deepskyblue;
+    margin-top: 40px;
+}
+.xc-btn {
+    margin-top: 55px;
+}
+/*_tupian*/
+.xc-tp {
+    float: left;
+}
+.xc-fm {
+    background: url(../bj5.png) no-repeat -133px -174px;
+    width: 78px;
+    height: 76px;
+    position: absolute;
+    top: -25px;
+    left: -15px;
+}
+.xc-inf {
+    padding-top: 5px;
+    display: none;
+}
+.tpwenben {
+    width: 300px;
+    display: none
+}
+.btn.btn-danger.btn-sm.tp-btn {
+    position: absolute;
+    left:2px;
+}
+.tpname {
+    font-size: 1.5em;
+    font-weight: bolder;
+    position: absolute;
+    left:45px;
+    width: 130px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+.btn.btn-success.btn-sm.fm {
+    position: absolute;
+    left:205px;
+}
+.zxinxi {
+    width:240px;
+    word-wrap: break-word;
+    padding-top: 35px;
+    text-indent: 20px;
+    margin-bottom: -1px;
+}
+.xinxi {
+    padding-right: 50px;
+    width: 250px;
+    word-wrap: break-word;
+    text-indent: 20px;
+    padding-top: 10px;
+    font-size: 20px;
+}
+.wenben {
+    display: none;
+}
+/*creatxc*/
+.creatxc {
+    color: deepskyblue;
+    margin-top: -20px;
+}
+.cform {
+    color: #ffffff;
+}
+.up-img {
+    height: 350px;
+}
+/*managexc*/
+.table {
+    color: white;
+}
+.manage-xc {
+    color: white;
+}
+.manage-xc:hover {
+    color: deepskyblue;
+}

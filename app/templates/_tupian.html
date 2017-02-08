@@ -1,39 +1,35 @@
-<div style="float: left">
-    <div class="a thumbnail">
+<div class="xc-tp">
+    <div class="xc-p thumbnail">
         {% if tp.fm == True %}
-        <div style="background: url(../static/bj5.png) no-repeat -133px -174px;
-                width: 78px;height: 76px;position: absolute;top: -25px;left: -15px;" title="编辑"></div>
+        <div class="xc-fm" title="编辑"></div>
         {% endif %}
         <a href="#" data-toggle="modal" data-target="#{{ tp.id }}"><img src="{{ tp.lspath }}"></a>
         <div>
-            <div class="b" style="padding-top: 5px;display: none">
+            <div class="xc-inf">
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-danger btn-sm" style="position: absolute;left:2px;">
+                        <button type="button" class="btn btn-danger btn-sm tp-btn">
                             <span class="glyphicon glyphicon-heart"></span>
                         </button>
                     </div>
                     <div class="btn-group">
-                        <p class="text-info tpname"
-                           style="font-size: 1.5em;font-weight: bolder;position: absolute;
-                                  left:45px;width: 130px;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">
+                        <p class="text-info tpname">
                             {{ tp.tpname }}
                         </p>
                     </div>
-                    {% if current_user.is_authenticated %}
+                    {% if current_user.is_authenticated and current_user == xc.user %}
                     <div class="btn-group">
                         {% if tp.fm == False %}
-                        <button type="button" class="btn btn-success btn-sm fm" style="position: absolute;left:205px;" title="设为封面">
+                        <button type="button" class="btn btn-success btn-sm fm" title="设为封面">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                         {% endif %}
                     </div>
                     {% endif %}
                 </div>
-                <p style="width:240px;word-wrap: break-word;padding-top: 35px;text-indent: 20px;margin-bottom: -1px;"
-                   class="text-info zxinxi">{{ tp.about_tp }}</p>
+                <p class="text-info zxinxi">{{ tp.about_tp }}</p>
             </div>
-            <div class="modal fade" id="{{ tp.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            <div class="modal fade tp-modal" id="{{ tp.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                  data-backdrop="static" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -41,23 +37,22 @@
                             <button type="button" class="close guanbi" data-dismiss="modal"
                                     aria-hidden="true">&times;</button>
                             <h3 class="modal-title tpname">{{ tp.tpname }}</h3>
-                            <input class="form-control tpwenben" value="{{ tp.tpname }}"
-                                      style="width: 300px;display: none">
+                            <input class="form-control tpwenben" value="{{ tp.tpname }}">
                         </div>
                         <div class="modal-body" style="clear: both">
                             <div class="col-md-9">
-                                <a href="{{ url_for('.tupian',id=tp.id) }}" target="_blank"><img src="{{ tp.lspath }}" class="img-responsive center-block" title="查看原图"></a>
+                                <a href="{{ url_for('.tupian',id=tp.id) }}" target="_blank">
+                                    <img src="{{ tp.lspath }}" class="img-responsive center-block" title="查看原图">
+                                </a>
                             </div>
                             <div class="col-md-3">
-                                <p style="padding-right: 50px;width: 250px;word-wrap: break-word;text-indent: 20px;padding-top: 10px;font-size: 20px;"
-                                   class="xinxi text-info">{{ tp.about_tp }}</p>
-                                <textarea class="form-control wenben" rows="10"
-                                          style="display: none">{{ tp.about_tp }}</textarea>
+                                <p class="xinxi text-info">{{ tp.about_tp }}</p>
+                                <textarea class="form-control wenben" rows="10">{{ tp.about_tp }}</textarea>
                             </div>
                         </div>
                         <div class="modal-footer" style="clear: both">
-                            {% if current_user.is_authenticated %}
-                            <button type="button" class="btn btn-danger btn-sm shanchu">删除</button>
+                            {% if current_user.is_authenticated and current_user == xc.user %}
+                            <button type="button" class="btn btn-danger btn-sm shanchutp">删除</button>
                             <button type="button" class="btn btn-primary btn-sm bianji">编辑</button>
                             <button type="button" class="btn btn-primary queren" style="display: none">确认</button>
                             {% endif %}
